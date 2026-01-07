@@ -64,7 +64,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y zip
 
       - name: Create a deployable ZIP archive
-        run: zip -r workflow_script_package.zip scripts/
+        run: zip -r workflow_script_package.zip script/
 
       - name: Upload ZIP file as a workflow artifact
         uses: actions/upload-artifact@v4
