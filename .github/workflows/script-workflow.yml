@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Ensure script is executable
-        run: chmod +x scripts/uasmjs.sh
+        run: chmod +x script/uasmjs.sh
 
 # LINTING STAGE
 
@@ -33,21 +33,21 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shellcheck
 
       - name: Run ShellCheck on the script
-        run: shellcheck scripts/uasmjs.sh
+        run: shellcheck script/uasmjs.sh
 
 # SECURITY STAGE
       - name: Install Flawfinder (SAST Tool)
         run: sudo apt-get install -y flawfinder
 
       - name: Run Flawfinder security scan on script
-        run: flawfinder scripts/uasmjs.sh
+        run: flawfinder script/uasmjs.sh
 
 # TESTING STAGE
       - name: Show test message
         run: echo "Running simple test assertion..."
 
       - name: Execute Test Script
-        run: ./scripts/uasmjs.sh
+        run: ./script/uasmjs.sh
 
   package-and-deploy:
     needs: build-and-test
