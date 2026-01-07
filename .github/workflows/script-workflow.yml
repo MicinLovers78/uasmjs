@@ -1,6 +1,6 @@
 name: Script Workflow (Lint, Security, Test, Package)
 
-#Triggers only for pushes and pull requests targeting the 'main' branch
+# Triggers only for pushes and pull requests targeting the 'main' branch
 on:
   push:
     branches: [ main ]
@@ -15,7 +15,7 @@ jobs:
       contents: read
       security-events: write
 
-#Environment variable untuk seluruh job
+# Environment variable untuk seluruh job
 
     env:
       REQUIRED_VAR: "workflow_value"
@@ -35,15 +35,15 @@ jobs:
       - name: Run ShellCheck on the script
         run: shellcheck scripts/uasmjs.sh
 
-#SECURITY STAGE
+# SECURITY STAGE
       - name: Install Flawfinder (SAST Tool)
         run: sudo apt-get install -y flawfinder
 
       - name: Run Flawfinder security scan on script
         run: flawfinder scripts/uasmjs.sh
 
-#TESTING STAGE
-      - name: Show test massage
+# TESTING STAGE
+      - name: Show test message
         run: echo "Running simple test assertion..."
 
       - name: Execute Test Script
