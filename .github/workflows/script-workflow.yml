@@ -1,0 +1,73 @@
+name: Script Workflow (Lint, Security, Test, Package)
+
+#Triggers only for pushes and pull requests targeting the 'main' branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: # Manual trigger dari UI GitHub
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+#Environment variable untuk seluruh job
+
+    env:
+      REQUIRED_VAR: "workflow_value"
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Ensure script is executable
+        run: chmod +x scripts/uasmjs.sh
+
+# LINTING STAGE
+
+      - name: Install Shellcheck (linter)
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck on the script
+        run: shellcheck scripts/uasmjs.sh
+
+#SECURITY STAGE
+      - name: Install Flawfinder (SAST Tool)
+        run: sudo apt-get install -y flawfinder
+
+      - name: Run Flawfinder security scan on script
+        run: flawfinder scripts/uasmjs.sh
+
+#TESTING STAGE
+      - name: Show test massage
+        run: echo "Running simple test assertion..."
+
+      - name: Execute Test Script
+        run: ./scripts/uasmjs.sh
+
+  package-and-deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Install zip utility
+        run: sudo apt-get update && sudo apt-get install -y zip
+
+      - name: Create a deployable ZIP archive
+        run: zip -r workflow_script_package.zip scripts/
+
+      - name: Upload ZIP file as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: script-artifact
+          path: workflow_script_package.zip
